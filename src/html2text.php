@@ -521,7 +521,7 @@ class HtmlAElement extends HtmlInlineElement {
             if (mb_strwidth2($output) > $width / 2) {
                 // Parse URL and use relative path part
                 if ($PU = parse_url($output))
-                    $output = $PU['host'] . $PU['path'];
+                    $output = ($PU['host'] ?? '') . $PU['path'];
             }
             if ($href != $output)
                 $id = $this->getRoot()->addFootnote($output, $href);
