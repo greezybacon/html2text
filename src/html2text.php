@@ -1048,7 +1048,5 @@ do {
       $width = (int) $argv[2];
   elseif (isset($ENV['COLUMNS']))
       $width = $ENV['COLUMNS'];
-  require_once(dirname(__file__).'/../bootstrap.php');
-  Bootstrap::i18n_prep();
   echo convert_html_to_text (file_get_contents ($file), $width);
 } while (0);
