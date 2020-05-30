@@ -527,7 +527,7 @@ class HtmlAElement extends HtmlInlineElement {
                 $id = $this->getRoot()->addFootnote($output, $href);
             $output = "[$output][$id]";
         } elseif ($href != $output) {
-            $output = "[$output]($href)";
+            $output = "[$output](".urldecode($href).")";
         }
         return $output;
     }
