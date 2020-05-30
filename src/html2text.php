@@ -535,9 +535,14 @@ class HtmlAElement extends HtmlInlineElement {
 }
 
 class HtmlListElement extends HtmlBlockElement {
-    var $marker = "  %d. ";
+    var $marker = null;
+    var $index = 0;
 
     function render($width, $options) {
+        if (!isset($this->marker)) {
+            // Space pad the number to right-justify all the numbers
+            $this->marker = sprintf('  %% %dd. ', ceil(log10($this->index)));
+        }
         $options['marker'] = $this->marker;
         return parent::render($width, $options);
     }
@@ -547,12 +552,12 @@ class HtmlListElement extends HtmlBlockElement {
             return;
         switch (strtolower($node->nodeName)) {
             case "li":
-                $this->children[] = new HtmlListItem($node, $this->parent, $number++);
+                $this->children[] = new HtmlListItem($node, $this->parent, ++$this->index);
                 return;
             // Anything else is ignored
         }
         for ($i = 0; $i < $node->childNodes->length; $i++)
-            $this->traverse($node->childNodes->item($i), $number);
+            $this->traverse($node->childNodes->item($i), $this->index);
     }
 }
 
