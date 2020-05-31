@@ -22,10 +22,18 @@
  *   <li>Information in the &lt;head&gt; is lost
  * </ul>
  *
- * @param html the input HTML
+ * @param html          (string) the input HTML
+ * @param width         (int, default=76) the width of the rendered document
+ * @param stylesheet    (complex array) custom styles to be applied to the
+ *                      document. These styles will take preference over the
+ *                      built in stylesheet. Currently, only tags and
+ *                      classes are considered, and specificity of a rule is
+ *                      not considered.
+ *                      Example: ['p' => ['margin-bottom: 1em']]
+ *
  * @return the HTML converted, as best as possible, to text
  */
-function convert_html_to_text($html, $width=74) {
+function convert_html_to_text($html, $width=76, $stylesheet=false) {
 
     $html = fix_newlines($html);
     $doc = new DOMDocument('1.0', 'utf-8');
@@ -44,6 +52,10 @@ function convert_html_to_text($html, $width=74) {
     }
 
     $elements = identify_node($doc);
+
+    // Add custom stylesheet
+    if ($stylesheet !== false)
+        $elements->getRoot()->addStylesheet($stylesheet);
 
     // Add the default stylesheet
     $elements->getRoot()->addStylesheet(
@@ -321,7 +333,7 @@ class HtmlInlineElement {
         return $this->root;
     }
 
-    function addStylesheet(&$s) {
+    function addStylesheet($s) {
         $this->stylesheets[] = $s;
     }
 
@@ -878,9 +890,13 @@ class HtmlStylesheet {
 
     static function fromArray($selectors) {
         $self = new HtmlStylesheet();
+        return $self->extend($selectors);
+    }
+
+    function extend($selectors) {
         foreach ($selectors as $s=>$rules)
-            $self->rules[$s] = CssStyleRules::fromArray($rules);
-        return $self;
+            $this->rules[$s] = CssStyleRules::fromArray($rules);
+        return $this;
     }
 }
 
@@ -928,7 +944,6 @@ class CssStyleRules {
             $this->styles['padding-right'] = $b;
             $this->rules['padding-bottom'] = $c;
             $this->rules['padding-left'] = $d;
-
         }
     }
 
