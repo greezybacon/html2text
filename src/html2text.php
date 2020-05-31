@@ -2,6 +2,7 @@
 /******************************************************************************
  * Copyright (c) 2019 Jared Hancock
  * Copyright (c) 2010 Jevon Wright and others.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Apache License, 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +20,7 @@
  * <p>In particular, it tries to maintain the following features:
  * <ul>
  *   <li>Links are maintained, with the 'href' copied over
+ *   <li>Long hrefs are moved to footnotes at the bottom of the document
  *   <li>Information in the &lt;head&gt; is lost
  * </ul>
  *
@@ -33,7 +35,7 @@
  *
  * @return the HTML converted, as best as possible, to text
  */
-function convert_html_to_text($html, $width=76, $stylesheet=false) {
+function render_html_to_text($html, $width=76, $stylesheet=false) {
 
     $html = fix_newlines($html);
     $doc = new DOMDocument('1.0', 'utf-8');
@@ -1064,5 +1066,5 @@ do {
       $width = (int) $argv[2];
   elseif (isset($ENV['COLUMNS']))
       $width = $ENV['COLUMNS'];
-  echo convert_html_to_text (file_get_contents ($file), $width);
+  echo render_html_to_text (file_get_contents ($file), $width);
 } while (0);
